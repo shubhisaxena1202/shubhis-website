@@ -53,7 +53,7 @@ export const experience = [
     bullets: [
       "Built a proactive anomaly detection system on transactional and logistics data that flagged $3M in at-risk sales before orders were lost, running continuously to give teams actionable signal before the recovery window closed.",
       "Designed demand forecasting architecture across 72,000 SKU–distribution center combinations, reducing forecast error 10–15% by moving from individual to hierarchical models and improving inventory decisions at scale.",
-      "Led a paid media attribution experiment using synthetic difference-in-differences with Walmart.com, identifying keyword-level drivers contributing $160K/month in incremental sales lift.",
+      "Led a paid media attribution experiment using synthetic difference-in-differences with Walmart.com, identifying keyword-level drivers contributing $160K/year in incremental sales lift.",
     ],
   },
 ];
