@@ -7,6 +7,15 @@ export const links = {
 
 export const articles = [
   {
+    title: "You Are Probably Running a 22% Test, Not a 5% One",
+    blurb:
+      "Why peeking at your A/B test inflates false positives, and how to peek anyway without paying for it.",
+    date: "Jul 2026",
+    image:
+      "https://miro.medium.com/v2/resize:fill:800:800/1*DUuCI61X50vMUhDiHq0YEg.png",
+    url: "https://medium.com/@shubhiS/you-are-probably-running-a-22-test-and-not-a-5-one-ceb5a0726bbd",
+  },
+  {
     title: "Cutting your A/B Test in Half with CUPED (Part 2)",
     blurb:
       "Variance reduction with CUPED and the Lin estimator: how to shrink an underpowered test back down to a usable sample size.",
