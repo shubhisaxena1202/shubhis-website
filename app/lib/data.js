@@ -7,6 +7,15 @@ export const links = {
 
 export const articles = [
   {
+    title: "Clicks to Conversion: Can LLMs Actually Answer What Shoppers Want?",
+    blurb:
+      "E-commerce search optimizes for clicks, not purchases. Using LLM-as-teacher distillation to train a fast student model that scores relevance by what shoppers actually buy.",
+    date: "Aug 2026",
+    image:
+      "https://miro.medium.com/v2/resize:fill:800:800/1*xTcRtFjVhO18sQoJ-DtkNA.png",
+    url: "https://medium.com/@shubhiS/clicks-to-conversion-can-llms-actually-answer-what-shoppers-want-f7883d75a497",
+  },
+  {
     title: "You Are Probably Running a 22% Test, Not a 5% One",
     blurb:
       "Why peeking at your A/B test inflates false positives, and how to peek anyway without paying for it.",
