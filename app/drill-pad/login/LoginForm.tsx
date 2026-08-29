@@ -16,6 +16,13 @@ export default function LoginForm() {
     setLoading(true)
     setError(null)
     try {
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      if (!url || !key) {
+        setError(\`Missing env vars — URL: \${url ? 'set' : 'MISSING'}, Key: \${key ? 'set' : 'MISSING'}. Redeploy after adding them.\`)
+        setLoading(false)
+        return
+      }
       const supabase = createClient()
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
