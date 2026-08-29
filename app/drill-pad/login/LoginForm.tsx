@@ -9,37 +9,51 @@ export default function LoginForm() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [debug, setDebug] = useState("")
   const router = useRouter()
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError(null)
+    setDebug("v2 — checking env vars...")
+
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    if (!url || !key) {
+      setError("Missing env vars. URL: " + (url ? "set" : "MISSING") + ", Key: " + (key ? "set" : "MISSING"))
+      setLoading(false)
+      return
+    }
+
+    setDebug("Env OK. Calling Supabase at: " + url)
+
     try {
-      const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-      if (!url || !key) {
-        setError("Missing env vars. URL: " + (url ? "set" : "MISSING") + ", Key: " + (key ? "set" : "MISSING") + ". Redeploy after adding them.")
-        setLoading(false)
-        return
-      }
       const supabase = createClient()
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+
+      const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Timed out after 10s. Supabase URL: " + url)), 10000)
+      )
+      const signIn = supabase.auth.signInWithPassword({ email, password })
+
+      const { data, error } = await Promise.race([signIn, timeout]) as any
+
       if (error) {
         setError(error.message)
         setLoading(false)
         return
       }
-      if (!data.session) {
-        setError("Sign-in succeeded but no session was returned.")
+      if (!data?.session) {
+        setError("Sign-in returned but no session.")
         setLoading(false)
         return
       }
+      setDebug("Success! Redirecting...")
       router.push("/drill-pad")
       router.refresh()
     } catch (err: any) {
-      setError(err?.message || "Unexpected error — check browser console.")
-      console.error("Login error:", err)
+      setError(err?.message || "Unknown error")
       setLoading(false)
     }
   }
@@ -47,7 +61,7 @@ export default function LoginForm() {
   return (
     <div style={styles.page}>
       <form onSubmit={handleSubmit} style={styles.card}>
-        <div style={styles.brand}>◇ DRILL PAD</div>
+        <div style={styles.brand}>&#9671; DRILL PAD</div>
         <h1 style={styles.title}>Sign in</h1>
         <input
           type="email"
@@ -65,9 +79,10 @@ export default function LoginForm() {
           style={styles.input}
           autoComplete="current-password"
         />
+        {debug && <div style={styles.debug}>{debug}</div>}
         {error && <div style={styles.error}>{error}</div>}
         <button disabled={loading} type="submit" style={styles.button}>
-          {loading ? "Signing in…" : "Sign in"}
+          {loading ? "Signing in..." : "Sign in"}
         </button>
       </form>
     </div>
@@ -109,6 +124,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#E9EDE7",
     fontSize: 13,
   },
+  debug: { color: "#7B9A8E", fontSize: 11, marginBottom: 8, wordBreak: "break-all" as any },
   error: { color: "#E0645A", fontSize: 12, marginBottom: 10 },
   button: {
     width: "100%",
