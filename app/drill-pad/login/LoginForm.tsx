@@ -15,15 +15,26 @@ export default function LoginForm() {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    setLoading(false)
-    if (error) {
-      setError(error.message)
-      return
+    try {
+      const supabase = createClient()
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) {
+        setError(error.message)
+        setLoading(false)
+        return
+      }
+      if (!data.session) {
+        setError('Sign-in succeeded but no session was returned.')
+        setLoading(false)
+        return
+      }
+      router.push('/drill-pad')
+      router.refresh()
+    } catch (err: any) {
+      setError(err?.message || 'Unexpected error — check browser console.')
+      console.error('Login error:', err)
+      setLoading(false)
     }
-    router.push('/drill-pad')
-    router.refresh()
   }
 
   return (
