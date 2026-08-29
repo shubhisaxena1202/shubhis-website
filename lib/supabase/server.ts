@@ -1,0 +1,29 @@
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
+
+// Call this fresh inside each Server Component / Route Handler — do not cache the instance.
+export async function createClient() {
+  const cookieStore = await cookies()
+
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
+          } catch {
+            // Called from a Server Component that can't write cookies — safe to ignore,
+            // session refresh will happen on the next request that can (e.g. a Route Handler).
+          }
+        },
+      },
+    }
+  )
+}
