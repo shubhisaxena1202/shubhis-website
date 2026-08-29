@@ -2,58 +2,34 @@
 
 import { useState, type FormEvent } from "react"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
 
 export default function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [debug, setDebug] = useState("")
   const router = useRouter()
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    setDebug("v2 — checking env vars...")
-
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-    if (!url || !key) {
-      setError("Missing env vars. URL: " + (url ? "set" : "MISSING") + ", Key: " + (key ? "set" : "MISSING"))
-      setLoading(false)
-      return
-    }
-
-    setDebug("Env OK. Calling Supabase at: " + url)
-
     try {
-      const supabase = createClient()
-
-      const timeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Timed out after 10s. Supabase URL: " + url)), 10000)
-      )
-      const signIn = supabase.auth.signInWithPassword({ email, password })
-
-      const { data, error } = await Promise.race([signIn, timeout]) as any
-
-      if (error) {
-        setError(error.message)
+      const res = await fetch("/api/drill-auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
+      const json = await res.json()
+      if (!res.ok) {
+        setError(json.error || "Sign-in failed")
         setLoading(false)
         return
       }
-      if (!data?.session) {
-        setError("Sign-in returned but no session.")
-        setLoading(false)
-        return
-      }
-      setDebug("Success! Redirecting...")
       router.push("/drill-pad")
       router.refresh()
     } catch (err: any) {
-      setError(err?.message || "Unknown error")
+      setError(err?.message || "Network error")
       setLoading(false)
     }
   }
@@ -79,7 +55,6 @@ export default function LoginForm() {
           style={styles.input}
           autoComplete="current-password"
         />
-        {debug && <div style={styles.debug}>{debug}</div>}
         {error && <div style={styles.error}>{error}</div>}
         <button disabled={loading} type="submit" style={styles.button}>
           {loading ? "Signing in..." : "Sign in"}
@@ -124,7 +99,6 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#E9EDE7",
     fontSize: 13,
   },
-  debug: { color: "#7B9A8E", fontSize: 11, marginBottom: 8, wordBreak: "break-all" as any },
   error: { color: "#E0645A", fontSize: 12, marginBottom: 10 },
   button: {
     width: "100%",
