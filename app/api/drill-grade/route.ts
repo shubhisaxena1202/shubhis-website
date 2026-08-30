@@ -161,7 +161,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-5', // check console.anthropic.com/docs for the current recommended model string
-        max_tokens: 1000,
+        max_tokens: 4096,
         system: DRILL_SYSTEM_DOC,
         messages,
       }),

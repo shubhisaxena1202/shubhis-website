@@ -31,8 +31,7 @@
   grid-template-areas:
     "header header header"
     "rail pad signal";
-  max-width:1400px;
-  margin:0 auto;
+  width:100%;
 }
 #dp-root, #dp-root *{ box-sizing:border-box; }
 #dp-root button, #dp-root textarea, #dp-root select{ font-family: var(--dp-sans); }
