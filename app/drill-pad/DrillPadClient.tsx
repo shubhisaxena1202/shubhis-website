@@ -81,7 +81,7 @@ function parseMeta(text: string): Meta | null {
   }
 }
 
-export default function DrillPadClient({ userEmail }: { userEmail: string }) {
+export default function DrillPadClient({ userEmail, onBack }: { userEmail: string; onBack?: () => void }) {
   const router = useRouter()
   const [sessions, setSessions] = useState<SessionRecord[]>([])
   const [gapLog, setGapLog] = useState<GapEvent[]>([])
@@ -304,6 +304,7 @@ Please begin the drill now. Remember: one stage per message, end every message w
           <button className="ghost-btn" style={{ width: 'auto', padding: '5px 10px' }} onClick={signOut}>
             Sign out
           </button>
+          {onBack && <button className="ghost-btn" style={{ width: 'auto', padding: '5px 10px' }} onClick={onBack}>Back</button>}
         </div>
       </header>
 

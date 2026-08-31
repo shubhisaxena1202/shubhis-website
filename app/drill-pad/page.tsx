@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import DrillPadClient from './DrillPadClient'
+import DrillHub from './DrillHub'
 
 export const metadata = {
-  robots: { index: false, follow: false }, // keep it out of search engines
+  robots: { index: false, follow: false },
 }
 
 export default async function DrillPadPage() {
@@ -14,5 +14,5 @@ export default async function DrillPadPage() {
     redirect('/drill-pad/login')
   }
 
-  return <DrillPadClient userEmail={user!.email ?? ''} />
+  return <DrillHub userEmail={user!.email ?? ''} />
 }
