@@ -55,6 +55,13 @@ export const articles = [
 
 export const projects = [
   {
+    title: "Clicks to Conversion: LLM-as-Teacher Distillation for E-Commerce Search Relevance",
+    blurb:
+      "A teacher-student pipeline that replaces click-optimized e-commerce search ranking with conversion-aware relevance scoring. Claude scores query-product pairs offline using a structured rubric (the teacher), and an XGBoost model trained on 800 labeled examples serves predictions at production speed (the student). Diagnosed and fixed two classic rater biases in the LLM judge: central tendency bias and acquiescence bias. Validated with a simulated A/B test (53K users/arm) showing a 10.1% lift in purchase rate (p = 0.004), with simulation and causal proof.",
+    tags: ["LLM-as-Judge", "Causal Inference", "E-Commerce", "XGBoost", "Python"],
+    url: "https://medium.com/@shubhiS/clicks-to-conversion-can-llms-actually-answer-what-shoppers-want-f7883d75a497",
+  },
+  {
     title: "LLM Eval & Experimentation Harness (AEO A/B Testing)",
     blurb:
       "A reusable platform for A/B testing LLM features: define a task, run variants, score outputs with an LLM-as-judge, and get statistical significance plus power analysis on a dashboard. Demoed on Answer Engine Optimization: does AEO-formatted content get recommended more often by a RAG answer engine? Pre-registered design, two-layer statistical testing (z-test and paired t-test), bootstrap confidence intervals, and an honest null result reported alongside the power analysis that explains it.",
