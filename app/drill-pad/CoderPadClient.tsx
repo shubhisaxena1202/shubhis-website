@@ -66,9 +66,9 @@ This question MUST be structured as 3-4 escalating parts, the way a real intervi
 
 const ARCHETYPE_RULES: Record<string, string> = {
   sql: `Generate ONE medium-hard SQL business scenario with ONE shared schema.${MULTIPART_RULE}
-Across the parts combined, require at least 2 of: window function (LAG/LEAD/ROW_NUMBER/RANK/SUM-AVG OVER PARTITION BY), CASE WHEN inside an aggregate, CTE structure, date logic (quarters/cohort weeks/30-day windows). Include at least one nullable column to force NULL handling. Provide full schema (table names, columns, types) in context_markdown. Do not include hints or solutions in any part.`,
+Across the parts combined, require at least 2 of: window function (LAG/LEAD/ROW_NUMBER/RANK/SUM-AVG OVER PARTITION BY), CASE WHEN inside an aggregate, CTE structure, date logic (quarters/cohort weeks/30-day windows). Design the schema so NULLs exist naturally where they would in production data, but do NOT call them out — she must notice and handle them on her own. Provide full schema (table names, columns, types) in context_markdown. Do not include hints, solutions, or relationship descriptions in any part.`,
   pandas: `Generate ONE pandas scenario with 2-3 DataFrames (schemas described), used across all parts.${MULTIPART_RULE}
-Across the parts combined, require: groupby+agg with NAMED aggregation syntax (agg(new_col=('source_col','func'))), a merge with an EXPLICIT how= she must state and justify, transform for at least one group-level stat broadcast back to the original index, and one NULL-handling decision.`,
+Across the parts combined, require: groupby+agg with NAMED aggregation syntax (agg(new_col=('source_col','func'))), a merge where she must choose and justify the join type, transform for at least one group-level stat broadcast back to the original index. Design DataFrames so missing values exist naturally, but do NOT point them out — she must notice them.`,
   simulation: `Generate ONE statistical simulation scenario (bootstrap CI, permutation test, power simulation, or Monte Carlo - rotate), used across all parts.${MULTIPART_RULE}
 State explicitly that she must implement it with numpy only - NO scipy, NO statsmodels. Good escalation: (a) implement the core simulation -> (b) report the deliverable (e.g. 95% CI via percentile method, or % reaching significance) -> (c) change a parameter (unequal sample sizes, different alpha, effect size) and ask how the result changes -> (d) interpret the result for a launch decision.`,
   code_reading: `Write ONE 15-30 line Python function (put the full code in the FIRST part's text inside a code block) related to: CUPED variants, retention cohort analysis, funnel drop-off calculation, rolling metric with window functions, or A/B test result formatting with CIs. Do NOT say what it does.${MULTIPART_RULE}
@@ -84,7 +84,7 @@ ARCHETYPE INSTRUCTIONS:
 ${ARCHETYPE_RULES[archetype]}
 
 SCHEMA REQUIREMENTS (apply to every archetype that involves a dataset):
-For every table or DataFrame, give: (1) one line saying what a row represents, (2) each column as "- column_name (type): what it means" — always state the type AND the business meaning, (3) explicitly flag which columns can be NULL and what a NULL means there, (4) row count order of magnitude, (5) if there are 2+ tables, one line on how they relate.
+For every table or DataFrame, give: (1) one line saying what a row represents, (2) each column as "- column_name (type): what it means" — state the type and the business meaning, (3) row count order of magnitude. Present as a real interviewer would — just the schema, no hints about NULLs, no explicit join key callouts, no relationship labels like "many-to-one". She should figure out the relationships and edge cases herself.
 Use compact bullet lists, not markdown tables.
 
 Keep everything else lean: hidden_solution_markdown should be the code plus 2-3 sentences of explanation, nothing longer. Total response must fit comfortably in 2200 tokens.

@@ -22,7 +22,26 @@ export async function GET() {
     return NextResponse.json({ error: (sErr || gErr)?.message }, { status: 500 })
   }
 
-  return NextResponse.json({ sessions: sessions ?? [], gapLog: gapLog ?? [] })
+  // Map snake_case DB columns to camelCase client fields
+  const mappedSessions = (sessions ?? []).map((s: any) => ({
+    id: s.id,
+    dayType: s.day_type,
+    company: s.company,
+    domain: s.domain,
+    grade: s.grade,
+    startedAt: s.started_at,
+    endedAt: s.ended_at,
+    rawMessages: s.raw_messages ?? [],
+    gapsFlaggedTotal: s.gaps_flagged_total ?? [],
+  }))
+  const mappedGapLog = (gapLog ?? []).map((e: any) => ({
+    date: e.event_date,
+    sessionId: e.session_id,
+    category: e.category,
+    hit: e.hit,
+  }))
+
+  return NextResponse.json({ sessions: mappedSessions, gapLog: mappedGapLog })
 }
 
 export async function POST(req: NextRequest) {
